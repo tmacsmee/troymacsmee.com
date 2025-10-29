@@ -1,14 +1,13 @@
+import ClickRings from "@/components/click-rings";
+import Navigation from "@/components/navigation";
+import Shockwave from "@/components/shockwave";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter_Tight } from "next/font/google";
+import { ViewTransition } from "react";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter_Tight({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
@@ -25,9 +24,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${inter.variable} antialiased bg-background min-h-screen font-sans`}
       >
-        {children}
+        <Shockwave />
+        <div className="pt-36 px-36 flex w-full">
+          <Navigation />
+          <main className="w-[calc(100%-12rem)] mx-auto max-w-3xl">
+            <ViewTransition default="crossfade">{children}</ViewTransition>
+          </main>
+        </div>
       </body>
     </html>
   );
