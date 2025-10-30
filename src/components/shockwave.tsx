@@ -27,7 +27,7 @@ export default function Shockwave() {
   }, []);
 
   return (
-    <>
+    <div className="fixed inset-0 pointer-events-none">
       {circles.map((circle) => (
         <div
           key={circle.id}
@@ -35,6 +35,6 @@ export default function Shockwave() {
           className="absolute border-2 border-black/50 translate-x-[-50%] translate-y-[-50%] rounded-full shockwave pointer-events-none"
         />
       ))}
-    </>
+    </div>
   );
 }
