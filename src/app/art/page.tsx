@@ -1,110 +1,42 @@
-"use client";
+import ZoomImage from "@/components/zoom-image";
+import Circles from "@/public/images/circles.png";
+import DarkSun from "@/public/images/dark-sun.png";
+import Eclipse from "@/public/images/eclipse.png";
+import Fold from "@/public/images/fold.png";
+import Giant from "@/public/images/giant.png";
+import Wave from "@/public/images/wave.png";
+import { StaticImageData } from "next/image";
 
-import { cn } from "@/lib/utils";
-import Image, { ImageProps } from "next/image";
-import { useEffect, useRef, useState } from "react";
-import { flushSync } from "react-dom";
-import Circles from "../../../public/circles.png";
+const images: { src: StaticImageData; alt: string; aspectRatio: number }[] = [
+  { src: Circles, alt: "Circles", aspectRatio: 16 / 9 },
+  { src: Eclipse, alt: "Eclipse", aspectRatio: 16 / 9 },
+  { src: Giant, alt: "Giant", aspectRatio: 16 / 9 },
+  { src: DarkSun, alt: "Dark Sun", aspectRatio: 16 / 9 },
+  { src: Fold, alt: "Fold", aspectRatio: 1 },
+  { src: Wave, alt: "Wave", aspectRatio: 1 },
+];
 
 export default function ArtPage() {
   return (
     <div>
       <h1 className="text-3xl font-semibold tracking-tight">Art</h1>
-      <p className="mt-6">I&apos;m not an artist.</p>
-      <div className="flex flex-wrap gap-4">
-        <ZoomableImage
-          src={Circles}
-          alt="Circles"
-          unoptimized
-          duration={150}
-          className={cn("w-96 h-auto")}
-        />
-        <ZoomableImage
-          src={Circles}
-          alt="Circles"
-          unoptimized
-          duration={150}
-          className={cn("w-96 h-auto")}
-        />
+      <p className="mt-6">
+        Feel free to use these images however you like. No permission or credit
+        needed.
+      </p>
+      <div className="flex flex-wrap gap-4 mt-4">
+        {images.map((image) => (
+          <ZoomImage
+            key={image.src.src}
+            src={image.src}
+            alt={image.alt}
+            unoptimized
+            placeholder="blur"
+            aspectRatio={image.aspectRatio}
+            className="h-34.5 w-auto"
+          />
+        ))}
       </div>
     </div>
-  );
-}
-
-type ZoomableImageProps = ImageProps & { duration?: number };
-
-export function ZoomableImage({
-  duration = 400,
-  ...imgProps
-}: ZoomableImageProps) {
-  const ref = useRef<HTMLImageElement | null>(null);
-  const [zoomed, setZoomed] = useState(false);
-
-  useEffect(() => {
-    if (!zoomed) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        toggle();
-      }
-    };
-
-    window.addEventListener("keydown", onKey);
-
-    return () => window.removeEventListener("keydown", onKey);
-  }, [zoomed]);
-
-  function toggle() {
-    const el = ref.current;
-    if (!el) return;
-
-    el.style.transition = "none";
-
-    const first = el.getBoundingClientRect();
-
-    flushSync(() => setZoomed((z) => !z));
-
-    const last = el.getBoundingClientRect();
-    const dx = first.left - last.left;
-    const dy = first.top - last.top;
-    const sx = first.width / last.width || 1;
-    const sy = first.height / last.height || 1;
-
-    el.style.transformOrigin = "top left";
-    el.style.transform = `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`;
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    el.offsetWidth;
-
-    el.style.transition = `transform ${duration}ms ease-in-out`;
-    el.style.transform = "none";
-  }
-
-  return (
-    <>
-      <div
-        className={`fixed inset-0 ${
-          zoomed
-            ? "opacity-100 backdrop-blur-md pointer-events-auto"
-            : "opacity-0 pointer-events-none"
-        } transition-opacity`}
-        onClick={toggle}
-        aria-hidden
-      />
-
-      {/* eslint-disable-next-line jsx-a11y/alt-text */}
-      <Image
-        ref={ref as React.RefObject<HTMLImageElement>}
-        {...imgProps}
-        className={cn(
-          "will-change-transform",
-          imgProps.className,
-          zoomed
-            ? "cursor-zoom-out fixed inset-0 m-auto z-50 h-120 w-auto"
-            : "relative cursor-zoom-in"
-        )}
-        unoptimized
-        onClick={toggle}
-      />
-    </>
   );
 }

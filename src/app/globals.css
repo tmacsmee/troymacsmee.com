@@ -64,5 +64,5 @@
 
 .shockwave {
   animation: shockwave 0.8s ease-out forwards;
-  /* animation: shockwave 1s cubic-bezier(0.6, 0, 0.8, 1) infinite; */
+  /* animation: shockwave 1s cubic-bezier(0.2, 0, 0.8, 1) infinite; */
 }
