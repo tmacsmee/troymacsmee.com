@@ -2,7 +2,7 @@
 
 import * as Portal from "@radix-ui/react-portal";
 import Image, { ImageProps } from "next/image";
-import { useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 type ZoomImageProps = ImageProps & {
   aspectRatio: number;
@@ -23,7 +23,7 @@ export default function ZoomImage({
   const backdropRef = useRef<HTMLDivElement>(null);
   const isZoomed = useRef(false);
 
-  function toggle() {
+  const toggle = useCallback(() => {
     const img = imageRef.current;
     const backdrop = backdropRef.current;
     if (!img || !backdrop) {
@@ -55,19 +55,42 @@ export default function ZoomImage({
     }ms ease, z-index 0ms linear ${duration ?? 150}ms`;
     img.style.transform = "none";
 
-    backdrop.className = isZoomed.current
-      ? "fixed inset-0 transition-opacity opacity-0 backdrop-blur-md pointer-events-none"
-      : "fixed inset-0 transition-opacity opacity-100 backdrop-blur-md pointer-events-auto";
+    backdrop.style.opacity = isZoomed.current ? "0" : "1";
+    backdrop.style.pointerEvents = isZoomed.current ? "none" : "auto";
 
     isZoomed.current = !isZoomed.current;
-  }
+  }, [duration]);
+
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key !== "Escape" || !isZoomed.current) {
+        return;
+      }
+      toggle();
+    }
+
+    function handleWheel() {
+      if (!isZoomed.current) {
+        return;
+      }
+      toggle();
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("wheel", handleWheel);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("wheel", handleWheel);
+    };
+  }, [toggle]);
 
   return (
     <>
       <Portal.Root
         ref={backdropRef}
         aria-hidden
-        className="fixed inset-0 transition-opacity opacity-0 pointer-events-none"
+        className="fixed inset-0 transition-opacity opacity-0 backdrop-blur-md pointer-events-none"
         onClick={toggle}
       />
 

@@ -5,7 +5,12 @@ import Eclipse from "@/public/images/eclipse.png";
 import Fold from "@/public/images/fold.png";
 import Giant from "@/public/images/giant.png";
 import Wave from "@/public/images/wave.png";
+import { Metadata } from "next";
 import { StaticImageData } from "next/image";
+
+export const metadata: Metadata = {
+  title: "Art",
+};
 
 const images: { src: StaticImageData; alt: string; aspectRatio: number }[] = [
   { src: Circles, alt: "Circles", aspectRatio: 16 / 9 },

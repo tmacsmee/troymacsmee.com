@@ -40,6 +40,14 @@
   }
 }
 
+:root {
+  view-transition-name: none;
+}
+
+::view-transition {
+  pointer-events: none;
+}
+
 ::view-transition-old(.crossfade) {
   animation: hide 0.4s cubic-bezier(0.6, 0, 0.8, 1) forwards;
 }
